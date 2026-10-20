@@ -21,11 +21,12 @@
 
 @implementation CDVWKWebViewUIDelegate
 
-- (instancetype)initWithTitle:(NSString*)title
+- (instancetype)initWithTitle:(NSString*)title localServer:(NSString*)localServer
 {
     self = [super init];
     if (self) {
         self.title = title;
+        self.localServer = localServer;
     }
 
     return self;
@@ -118,6 +119,23 @@
     UIViewController* rootController = [UIApplication sharedApplication].delegate.window.rootViewController;
 
     [rootController presentViewController:alert animated:YES completion:nil];
+}
+
+- (BOOL)isLocalServer:(WKSecurityOrigin*)origin
+{
+    NSString* server = [NSString stringWithFormat:@"%@://%@", origin.protocol, origin.host];
+    return origin.port == 0 && [server.lowercaseString isEqualToString:self.localServer.lowercaseString];
+}
+
+// The app's own pages skip WebKit's prompt, which otherwise follows the OS one on every launch; the OS permission still applies.
+- (void)                           webView:(WKWebView*)webView
+    requestMediaCapturePermissionForOrigin:(WKSecurityOrigin*)origin
+                          initiatedByFrame:(WKFrameInfo*)frame
+                                      type:(WKMediaCaptureType)type
+                           decisionHandler:(void (^)(WKPermissionDecision decision))decisionHandler API_AVAILABLE(ios(15.0))
+{
+    BOOL fromLocalServer = [self isLocalServer:origin] && [self isLocalServer:frame.securityOrigin];
+    decisionHandler(fromLocalServer ? WKPermissionDecisionGrant : WKPermissionDecisionPrompt);
 }
 
 @end
