@@ -22,7 +22,8 @@
 @interface CDVWKWebViewUIDelegate : NSObject <WKUIDelegate>
 
 @property (nonatomic, copy) NSString* title;
+@property (nonatomic, copy) NSString* localServer;
 
-- (instancetype)initWithTitle:(NSString*)title;
+- (instancetype)initWithTitle:(NSString*)title localServer:(NSString*)localServer;
 
 @end

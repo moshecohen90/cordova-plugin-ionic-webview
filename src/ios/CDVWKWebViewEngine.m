@@ -221,7 +221,8 @@
     }
     self.CDV_LOCAL_SERVER = [NSString stringWithFormat:@"%@://%@", scheme, bind];
 
-    self.uiDelegate = [[CDVWKWebViewUIDelegate alloc] initWithTitle:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]];
+    self.uiDelegate = [[CDVWKWebViewUIDelegate alloc] initWithTitle:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]
+                                                        localServer:self.CDV_LOCAL_SERVER];
 
     CDVWKWeakScriptMessageHandler *weakScriptMessageHandler = [[CDVWKWeakScriptMessageHandler alloc] initWithScriptMessageHandler:self];
 
